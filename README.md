@@ -38,6 +38,7 @@
 - [1](https://qna.habr.com/q/288566)
 - [2](https://stackoverflow.com/questions/29668889/how-to-get-city-sights-images-from-google-places-api)
 - [3](https://developers.google.com/maps/documentation/places/web-service/photos?hl=ru)
+  
 кратко идея: получаем несколько бд (для каждой страны по одной, и одну со списком стран). Оттуда будем рандомно выбирать какой-то специальный ключ, по которому будем запрашивать фотки из гугла 
 
 
