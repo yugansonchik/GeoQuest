@@ -33,11 +33,12 @@ params_for_photo = {
   "api_key": "d1dd78ada0cdcb4fe90e1b06efdea2928bf3f768b93e321653169bc7f452a301"
 }
 
-# Getting results of the photo-search
-all_photos = client.search(params_for_photo)["photos"]
+# Getting 30 first results of the photo-search
+all_photos = client.search(params_for_photo)["photos"][:30]
 
 # Making the list of five photos
-links = [all_photos[0]["image"], all_photos[1]["image"], all_photos[2]["image"], all_photos[3]["image"], all_photos[4]["image"]]
+random_five = random.sample(all_photos, 5)
+links = [random_five[0]["image"], random_five[1]["image"], random_five[2]["image"], random_five[3]["image"], random_five[4]["image"]]
 
 print(links)
 print(city["name"])
