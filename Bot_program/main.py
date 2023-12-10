@@ -8,6 +8,7 @@ BOT_TOKEN = '<Bot token>'
 
 bot = Bot(token=BOT_TOKEN)
 
+
 async def main() -> None:
     await handlers.dp.start_polling(bot)
 
