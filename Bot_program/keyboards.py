@@ -16,15 +16,14 @@ support_button = InlineKeyboardButton(
     callback_data='support_button_pressed'
 )
 
-# TODO: Поменять название режимов
-first_mode_button = InlineKeyboardButton(
-    text='First mode',
-    callback_data='first_mode_button_pressed'
+russian_cities_mode_button = InlineKeyboardButton(
+    text='Города России',
+    callback_data='russian_cities_mode_button_pressed'
 )
 
-second_mode_button = InlineKeyboardButton(
-    text='Second mode',
-    callback_data='second_mode_button_pressed'
+countries_mode_button = InlineKeyboardButton(
+    text='Страны',
+    callback_data='countries_mode_button_pressed'
 )
 
 menu_button = InlineKeyboardButton(
@@ -53,7 +52,7 @@ support_keyboard = InlineKeyboardMarkup(
 
 mode_choice_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
-        [first_mode_button, second_mode_button],
+        [russian_cities_mode_button, countries_mode_button],
         [menu_button]
     ]
 )
