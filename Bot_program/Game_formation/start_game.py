@@ -56,7 +56,7 @@ def run_countries():
         "q": country,
         "hl": "ru",
         "type": "search",
-        "api_key": "d1dd78ada0cdcb4fe90e1b06efdea2928bf3f768b93e321653169bc7f452a301"
+        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
     }
 
     # Getting results of the id-search
@@ -66,7 +66,7 @@ def run_countries():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results,
-        "api_key": "d1dd78ada0cdcb4fe90e1b06efdea2928bf3f768b93e321653169bc7f452a301"
+        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
     }
 
     # Getting 30 first results of the photo-search

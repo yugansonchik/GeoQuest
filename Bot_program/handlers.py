@@ -5,6 +5,7 @@ import keyboards
 import Game_formation.start_game as game
 from Levenshtein import distance
 from GeoQuest.Bot_program.synonyms import equivalent_names
+from GeoQuest.Bot_program.texts import hello, choose, to_support, rules, city_helper, country_helper
 
 # running = 'no' - no games running
 # running = 'russian_cities' - russian cities mode running
@@ -19,7 +20,7 @@ dp = Dispatcher()
 @dp.message(CommandStart())
 async def process_start_command(message: Message):
     await message.answer(
-        text='Привет. Это бот для игры в Geoguesser. Давай играть!',
+        text=hello,
         reply_markup=keyboards.start_keyboard
     )
 
@@ -30,9 +31,7 @@ async def process_start_command(message: Message):
 @dp.callback_query(F.data == 'play_button_pressed')
 async def process_play_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text='Выбери режим игры\n'
-             'Города России:...\n'
-             'Страны:...',
+        text=choose,
         reply_markup=keyboards.mode_choice_keyboard
     )
 
@@ -42,7 +41,7 @@ async def process_play_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'support_button_pressed')
 async def process_support_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text='Напишите ваше сообщение в поддержку',
+        text=to_support,
         reply_markup=keyboards.support_keyboard
     )
 
@@ -52,7 +51,7 @@ async def process_support_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'info_button_pressed')
 async def process_info_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text='Полные правила',
+        text=rules,
         reply_markup=keyboards.info_keyboard
     )
 
@@ -62,7 +61,7 @@ async def process_info_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'menu_button_pressed')
 async def process_menu_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text='Привет. Это бот для игры в Geoguesser. Давай играть!',
+        text=hello,
         reply_markup=keyboards.start_keyboard
     )
 
@@ -75,8 +74,7 @@ async def process_russian_cities_mode_button_press(callback: CallbackQuery):
     GAME_STATUS['running'] = 'russian_cities'
     GAME_STATUS['russian_cities'] = city
     message_data = [
-        InputMediaPhoto(media=links[0], caption='Попробуй угадать, какой это город. Напиши его название\n'
-                                                'Если хочешь закончить игру напиши /stop'),
+        InputMediaPhoto(media=links[0], caption=city_helper),
         InputMediaPhoto(media=links[1]),
         InputMediaPhoto(media=links[2]),
         InputMediaPhoto(media=links[3]),
@@ -95,8 +93,7 @@ async def process_countries_mode_button_press(callback: CallbackQuery):
     GAME_STATUS['running'] = 'countries'
     GAME_STATUS['countries'] = country
     message_data = [
-        InputMediaPhoto(media=links[0], caption='Попробуй угадать страну. Напиши её название\n'
-                                                'Если хочешь закончить игру напиши /stop'),
+        InputMediaPhoto(media=links[0], caption=country_helper),
         InputMediaPhoto(media=links[1]),
         InputMediaPhoto(media=links[2]),
         InputMediaPhoto(media=links[3]),
@@ -113,9 +110,7 @@ async def process_countries_mode_button_press(callback: CallbackQuery):
 async def process_stop_command(message: Message):
     GAME_STATUS['running'] = 'no'
     await message.answer(
-        text='Выбери режим игры\n'
-             'Города России:...\n'
-             'Second_mode:...',
+        text=choose,
         reply_markup=keyboards.mode_choice_keyboard
     )
 
@@ -129,8 +124,7 @@ async def process_next_command(message: Message):
         GAME_STATUS['running'] = 'russian_cities'
         GAME_STATUS['russian_cities'] = city
         message_data = [
-            InputMediaPhoto(media=links[0], caption='Попробуй угадать, какой это город. Напиши его название\n'
-                                                    'Если хочешь закончить игру напиши /stop'),
+            InputMediaPhoto(media=links[0], caption=city_helper),
             InputMediaPhoto(media=links[1]),
             InputMediaPhoto(media=links[2]),
             InputMediaPhoto(media=links[3]),
@@ -144,8 +138,7 @@ async def process_next_command(message: Message):
         GAME_STATUS['running'] = 'countries'
         GAME_STATUS['countries'] = country
         message_data = [
-            InputMediaPhoto(media=links[0], caption='Попробуй угадать страну. Напиши её название\n'
-                                                    'Если хочешь закончить игру напиши /stop'),
+            InputMediaPhoto(media=links[0], caption=country_helper),
             InputMediaPhoto(media=links[1]),
             InputMediaPhoto(media=links[2]),
             InputMediaPhoto(media=links[3]),
@@ -168,30 +161,30 @@ async def process_countries_game_answer(message: Message):
                               ([equivalent_name] if isinstance(equivalent_name, str) else equivalent_name)}
 
     user_answer_lower = user_answer.lower()
+    correct = f'Правильно! Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить напиши' \
+              f'/stop'
+    incorrect = f'Неправильно. Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить' \
+                f'напиши /stop'
 
     if user_answer_lower in equivalent_names_lower:
         if equivalent_names_lower[user_answer_lower] == correct_answer.lower():
             await message.answer(
-                text=f'Правильно! Это {correct_answer}\n'
-                     'Для нового раунда игры напиши /next. Если хочешь закончить напиши /stop'
+                text=correct,
             )
         else:
             await message.answer(
-                text=f'Неправильно. Это {correct_answer}\n'
-                     'Для нового раунда игры напиши /next. Если хочешь закончить напиши /stop',
+                text=incorrect,
             )
         return
 
     # Сравниваем введенный ответ с правильным по расстоянию Левенштейна
     if distance(correct_answer.lower(), user_answer_lower) <= levenshtein_threshold:
         await message.answer(
-            text=f'Правильно! Это {correct_answer}\n'
-                 'Для нового раунда игры напиши /next. Если хочешь закончить напиши /stop'
+            text=correct
         )
     else:
         await message.answer(
-            text=f'Неправильно. Это {correct_answer}\n'
-                 'Для нового раунда игры напиши /next. Если хочешь закончить напиши /stop',
+            text=incorrect,
         )
 
 '''
