@@ -4,10 +4,12 @@ from aiogram.filters import CommandStart
 import keyboards
 import Game_formation.start_game as game
 from Levenshtein import distance
+from GeoQuest.Bot_program.synonyms import equivalent_names
 
 # running = 'no' - no games running
 # running = 'russian_cities' - russian cities mode running
 # running = 'countries'
+
 GAME_STATUS = {'running': 'no', 'russian_cities': '', 'countries': ''}
 dp = Dispatcher()
 
@@ -161,19 +163,6 @@ async def process_countries_game_answer(message: Message):
     user_answer = message.text
 
     levenshtein_threshold = 3
-
-    # Есть ряд стран, для которых нужно учесть несколько вариантов (вне опечаток, покрываемых расст.Левенштейна)
-    equivalent_names = {
-        'Доминиканская Республика': 'Доминикана',
-        'Кабо-Верде': 'Острова Зеленого Мыса',
-        'Объединенные Арабские Эмираты': ['ОАЭ', 'Арабские Эмираты'],
-        'Республика Конго': 'Конго',
-        'Россия': ['РФ', 'Российская Федерация'],
-        'Сейшельские острова': 'Сейшелы',
-        'Соединенные Штаты Америки': ['США', 'Соединенные Штаты'],
-        'Южно-Африканская Республика': ['Южная Африка', 'ЮАР']
-    }
-
     equivalent_names_lower = {name.lower(): equivalent_name if isinstance(equivalent_name, str) else equivalent_name[0].lower() for
                               equivalent_name, names in equivalent_names.items() for name in
                               ([equivalent_name] if isinstance(equivalent_name, str) else equivalent_name)}
