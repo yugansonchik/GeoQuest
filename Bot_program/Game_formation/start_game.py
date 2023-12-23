@@ -78,7 +78,3 @@ def run_countries():
              random_five[4]["image"]]
 
     return links, country
-
-
-if __name__ == '__main__':
-    run_cities()
