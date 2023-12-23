@@ -25,7 +25,6 @@ async def process_start_command(message: Message):
     )
 
 
-# TODO: Дописать правила
 # Handler for play button
 # It will send message with mode_choice_keyboard
 @dp.callback_query(F.data == 'play_button_pressed')
@@ -156,8 +155,8 @@ async def process_countries_game_answer(message: Message):
     user_answer = message.text
 
     levenshtein_threshold = 3
-    equivalent_names_lower = {name.lower(): equivalent_name if isinstance(equivalent_name, str) else equivalent_name[0].lower() for
-                              equivalent_name, names in synonyms.equivalent_names.items() for name in
+    equivalent_names_lower = {name.lower(): equivalent_name if isinstance(equivalent_name, str) else equivalent_name[0].lower()
+                              for equivalent_name, names in synonyms.equivalent_names.items() for name in
                               ([equivalent_name] if isinstance(equivalent_name, str) else equivalent_name)}
 
     user_answer_lower = user_answer.lower()
@@ -177,7 +176,7 @@ async def process_countries_game_answer(message: Message):
             )
         return
 
-    # Сравниваем введенный ответ с правильным по расстоянию Левенштейна
+    # Comparing the entered answer with the correct one by the Levenshtein distance
     if distance(correct_answer.lower(), user_answer_lower) <= levenshtein_threshold:
         await message.answer(
             text=correct
