@@ -4,8 +4,8 @@ from aiogram.filters import CommandStart
 import keyboards
 import Game_formation.start_game as game
 from Levenshtein import distance
-from GeoQuest.Bot_program.synonyms import equivalent_names
-from GeoQuest.Bot_program.texts import hello, choose, to_support, rules, city_helper, country_helper
+import GeoQuest.Bot_program.synonyms as synonyms
+import GeoQuest.Bot_program.texts as texts
 
 # running = 'no' - no games running
 # running = 'russian_cities' - russian cities mode running
@@ -20,7 +20,7 @@ dp = Dispatcher()
 @dp.message(CommandStart())
 async def process_start_command(message: Message):
     await message.answer(
-        text=hello,
+        text=texts.hello,
         reply_markup=keyboards.start_keyboard
     )
 
@@ -31,7 +31,7 @@ async def process_start_command(message: Message):
 @dp.callback_query(F.data == 'play_button_pressed')
 async def process_play_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text=choose,
+        text=texts.choose,
         reply_markup=keyboards.mode_choice_keyboard
     )
 
@@ -41,7 +41,7 @@ async def process_play_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'support_button_pressed')
 async def process_support_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text=to_support,
+        text=texts.to_support,
         reply_markup=keyboards.support_keyboard
     )
 
@@ -51,7 +51,7 @@ async def process_support_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'info_button_pressed')
 async def process_info_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text=rules,
+        text=texts.rules,
         reply_markup=keyboards.info_keyboard
     )
 
@@ -61,7 +61,7 @@ async def process_info_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'menu_button_pressed')
 async def process_menu_button_press(callback: CallbackQuery):
     await callback.message.answer(
-        text=hello,
+        text=texts.hello,
         reply_markup=keyboards.start_keyboard
     )
 
@@ -74,7 +74,7 @@ async def process_russian_cities_mode_button_press(callback: CallbackQuery):
     GAME_STATUS['running'] = 'russian_cities'
     GAME_STATUS['russian_cities'] = city
     message_data = [
-        InputMediaPhoto(media=links[0], caption=city_helper),
+        InputMediaPhoto(media=links[0], caption=texts.city_helper),
         InputMediaPhoto(media=links[1]),
         InputMediaPhoto(media=links[2]),
         InputMediaPhoto(media=links[3]),
@@ -93,7 +93,7 @@ async def process_countries_mode_button_press(callback: CallbackQuery):
     GAME_STATUS['running'] = 'countries'
     GAME_STATUS['countries'] = country
     message_data = [
-        InputMediaPhoto(media=links[0], caption=country_helper),
+        InputMediaPhoto(media=links[0], caption=texts.country_helper),
         InputMediaPhoto(media=links[1]),
         InputMediaPhoto(media=links[2]),
         InputMediaPhoto(media=links[3]),
@@ -110,7 +110,7 @@ async def process_countries_mode_button_press(callback: CallbackQuery):
 async def process_stop_command(message: Message):
     GAME_STATUS['running'] = 'no'
     await message.answer(
-        text=choose,
+        text=texts.choose,
         reply_markup=keyboards.mode_choice_keyboard
     )
 
@@ -124,7 +124,7 @@ async def process_next_command(message: Message):
         GAME_STATUS['running'] = 'russian_cities'
         GAME_STATUS['russian_cities'] = city
         message_data = [
-            InputMediaPhoto(media=links[0], caption=city_helper),
+            InputMediaPhoto(media=links[0], caption=texts.city_helper),
             InputMediaPhoto(media=links[1]),
             InputMediaPhoto(media=links[2]),
             InputMediaPhoto(media=links[3]),
@@ -138,7 +138,7 @@ async def process_next_command(message: Message):
         GAME_STATUS['running'] = 'countries'
         GAME_STATUS['countries'] = country
         message_data = [
-            InputMediaPhoto(media=links[0], caption=country_helper),
+            InputMediaPhoto(media=links[0], caption=texts.country_helper),
             InputMediaPhoto(media=links[1]),
             InputMediaPhoto(media=links[2]),
             InputMediaPhoto(media=links[3]),
@@ -157,7 +157,7 @@ async def process_countries_game_answer(message: Message):
 
     levenshtein_threshold = 3
     equivalent_names_lower = {name.lower(): equivalent_name if isinstance(equivalent_name, str) else equivalent_name[0].lower() for
-                              equivalent_name, names in equivalent_names.items() for name in
+                              equivalent_name, names in synonyms.equivalent_names.items() for name in
                               ([equivalent_name] if isinstance(equivalent_name, str) else equivalent_name)}
 
     user_answer_lower = user_answer.lower()

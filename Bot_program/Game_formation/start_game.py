@@ -3,7 +3,7 @@ import serpapi
 import json
 import random
 
-from GeoQuest.Bot_program.Game_formation.countries import available_counties
+import GeoQuest.Bot_program.Game_formation.countries as countries_list
 
 client = serpapi.Client(api_key=os.getenv("d1dd78ada0cdcb4fe90e1b06efdea2928bf3f768b93e321653169bc7f452a301"))
 
@@ -48,7 +48,7 @@ def run_cities():
 
 def run_countries():
     # Choose one random country
-    country = random.choice(available_counties)
+    country = random.choice(countries_list.available_counties)
 
     # Setting parameters for the id-search
     params_for_id = {
