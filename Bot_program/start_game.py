@@ -10,7 +10,7 @@ client = serpapi.Client(api_key=os.getenv("d1dd78ada0cdcb4fe90e1b06efdea2928bf3f
 
 def run_cities():
     # Open JSON with the list of big Russian cities
-    with open('Game_formation/big_russian_cities.json') as json_file:
+    with open('big_russian_cities.json') as json_file:
         cities = json.load(json_file)["cities"]
 
     # Choose one random city
@@ -22,7 +22,7 @@ def run_cities():
         "q": city["name"],
         "hl": "ru",
         "type": "search",
-        "api_key": "c0300a70404e97563d66c62c41e272e8e9ee995f6e1abbffef49b719b181c9ce"
+        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
     }
 
     # Getting results of the id-search
@@ -32,7 +32,7 @@ def run_cities():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results,
-        "api_key": "c0300a70404e97563d66c62c41e272e8e9ee995f6e1abbffef49b719b181c9ce"
+        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
     }
 
     # Getting 30 first results of the photo-search

@@ -178,22 +178,3 @@ async def process_countries_game_answer(message: Message):
             await message.answer(
                 text=incorrect,
             )
-
-'''
-# pip install python-Levenshtein
-
-Эмпирическим путем было выбрано значение параметра threshold=3
-(расстояние Левенштейна 0: точное совпадение между двумя строками, расстояние Левенштейна 1: одно изменение (вставка, удаление или замена одного символа) между строками и так далее)
-
-def check_answer(user_answer, correct_answer, threshold=3):
-    return distance(correct_answer.lower(), user_answer.lower()) <= threshold
-
-correct_answer = "Москва"
-user_answer = "мосакава"
-result = check_answer(user_answer, correct_answer)
-
-if result:
-    print(f"Ответ считается правильным: {user_answer}")
-else:
-    print(f"Ответ считается неправильным: {user_answer}")
-'''
