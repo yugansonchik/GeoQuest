@@ -148,7 +148,30 @@ async def process_next_command(message: Message):
         )
 
 
-# Handler for game answers
+# Handler for countries answers
+@dp.message(lambda message: (GAME_STATUS['running'] == 'russian_cities'))
+async def process_countries_game_answer(message: Message):
+    correct_answer = GAME_STATUS['russian_cities']
+    user_answer = message.text
+
+    levenshtein_threshold = 3
+
+    correct = f'Правильно! Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить, напиши' \
+              f'/stop'
+    incorrect = f'Неправильно. Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить, ' \
+                f'напиши /stop'
+
+    if distance(correct_answer.lower(), user_answer.lower()) <= levenshtein_threshold:
+        await message.answer(
+            text=correct,
+        )
+    else:
+        await message.answer(
+            text=incorrect,
+        )
+
+
+# Handler for cities answers
 @dp.message(lambda message: (GAME_STATUS['running'] == 'countries'))
 async def process_countries_game_answer(message: Message):
     correct_answer = GAME_STATUS['countries']
