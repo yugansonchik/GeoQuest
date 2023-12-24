@@ -161,7 +161,7 @@ async def process_countries_game_answer(message: Message):
     incorrect = f'Неправильно. Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить, ' \
                 f'напиши /stop'
 
-    if distance(correct_answer.lower(), user_answer.lower()) <=  levenshtein_threshold:
+    if distance(correct_answer.lower(), user_answer.lower()) <= levenshtein_threshold:
         await message.answer(
             text=correct,
         )
@@ -178,7 +178,6 @@ async def process_countries_game_answer(message: Message):
             await message.answer(
                 text=incorrect,
             )
-
 
 '''
 # pip install python-Levenshtein
