@@ -1,3 +1,0 @@
-aiogram==3.10.12
-serpapi==0.1.5
-python-Levenshtein==0.23.0
