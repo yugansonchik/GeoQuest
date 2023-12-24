@@ -26,12 +26,12 @@ def run_cities():
     }
 
     # Getting results of the id-search
-    results = client.search(params_for_id)["place_results"]["data_id"]
+    results = client.search(params_for_id)["place_results"]
 
     # Setting parameters for the photo-search
     params_for_photo = {
         "engine": "google_maps_photos",
-        "data_id": results,
+        "data_id": results["data_id"],
         "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
     }
 
@@ -43,7 +43,9 @@ def run_cities():
     links = [random_five[0]["image"], random_five[1]["image"], random_five[2]["image"], random_five[3]["image"],
              random_five[4]["image"]]
 
-    return links, city["name"]
+    coords = (results["gps_coordinates"]["latitude"], results["gps_coordinates"]["longitude"])
+
+    return links, city["name"], coords
 
 
 def run_countries():

@@ -1,3 +1,5 @@
+import json
+
 from aiogram import Dispatcher, F
 from aiogram.types import Message, CallbackQuery, InputMediaPhoto
 from aiogram.filters import CommandStart
@@ -6,12 +8,17 @@ import GeoQuest.Bot_program.start_game as game
 from Levenshtein import distance
 import GeoQuest.Bot_program.countries as countries
 import GeoQuest.Bot_program.texts as texts
+from math import sqrt
+from geopy.distance import geodesic
+import GeoQuest.Bot_program.all_russian_cities as all_russian_cities
+
 
 # running = 'no' - no games running
 # running = 'russian_cities' - russian cities mode running
 # running = 'countries'
 
-GAME_STATUS = {'running': 'no', 'russian_cities': '', 'countries': ''}
+
+GAME_STATUS = {'running': 'no', 'russian_cities': '', 'countries': '', "coords": ()}
 dp = Dispatcher()
 
 
@@ -69,7 +76,7 @@ async def process_menu_button_press(callback: CallbackQuery):
 # It will start russian cities mode
 @dp.callback_query(F.data == 'russian_cities_mode_button_pressed')
 async def process_russian_cities_mode_button_press(callback: CallbackQuery):
-    links, city = game.run_cities()
+    links, city, coords = game.run_cities()
     GAME_STATUS['running'] = 'russian_cities'
     GAME_STATUS['russian_cities'] = city
     message_data = [
@@ -119,9 +126,10 @@ async def process_stop_command(message: Message):
 @dp.message(lambda message: (message.text == '/next' and GAME_STATUS['running'] != 'no'))
 async def process_next_command(message: Message):
     if GAME_STATUS['running'] == 'russian_cities':
-        links, city = game.run_cities()
+        links, city, coords = game.run_cities()
         GAME_STATUS['running'] = 'russian_cities'
         GAME_STATUS['russian_cities'] = city
+        GAME_STATUS['coords'] = coords
         message_data = [
             InputMediaPhoto(media=links[0], caption=texts.city_helper),
             InputMediaPhoto(media=links[1]),
@@ -152,23 +160,29 @@ async def process_next_command(message: Message):
 @dp.message(lambda message: (GAME_STATUS['running'] == 'russian_cities'))
 async def process_countries_game_answer(message: Message):
     correct_answer = GAME_STATUS['russian_cities']
+    coords = GAME_STATUS['coords']
     user_answer = message.text
+    points = 0
 
     levenshtein_threshold = 3
 
-    correct = f'Правильно! Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить, напиши' \
-              f'/stop'
-    incorrect = f'Неправильно. Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить, ' \
-                f'напиши /stop'
+    correct = f'Правильно! Это {correct_answer}. Вы получаете 1000 очков\nДля нового раунда игры напишите ' \
+              f'/next. Если хотите закончить, напишите /stop'
 
     if distance(correct_answer.lower(), user_answer.lower()) <= levenshtein_threshold:
         await message.answer(
             text=correct,
         )
     else:
-        await message.answer(
-            text=incorrect,
-        )
+        if user_answer.lower() in list(all_russian_cities.all_cities.keys()):
+            true_coords = all_russian_cities.all_cities[user_answer.lower()]
+            d = geodesic(coords, true_coords).kilometers
+            points = round(1000 / (max(sqrt(d) - 8.8, 1)))
+            incorrect = f'Неправильно. Это {correct_answer}. Вы получаете {points} очков\nДля нового раунда игры ' \
+                        f'напишите /next. Если хочешь закончить, напишите /stop'
+            await message.answer(
+                text=incorrect,
+            )
 
 
 # Handler for cities answers
