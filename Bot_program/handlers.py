@@ -166,10 +166,10 @@ async def process_countries_game_answer(message: Message):
 
     levenshtein_threshold = 3
 
-    correct = f'Правильно! Это {correct_answer}. Вы получаете 1000 очков\nДля нового раунда игры напишите ' \
-              f'/next. Если хотите закончить, напишите /stop'
-
     if distance(correct_answer.lower(), user_answer.lower()) <= levenshtein_threshold:
+        points = 1000
+        correct = f'Правильно! Это {correct_answer}. Вы получаете 1000 очков\nДля нового раунда игры напишите ' \
+                  f'/next. Если хотите закончить, напишите /stop'
         await message.answer(
             text=correct,
         )
@@ -179,7 +179,7 @@ async def process_countries_game_answer(message: Message):
             d = geodesic(coords, true_coords).kilometers
             points = round(1000 / (max(sqrt(d) - 8.8, 1)))
             incorrect = f'Неправильно. Это {correct_answer}. Вы получаете {points} очков\nДля нового раунда игры ' \
-                        f'напишите /next. Если хочешь закончить, напишите /stop'
+                        f'напишите /next. Если хотите закончить, напишите /stop'
             await message.answer(
                 text=incorrect,
             )

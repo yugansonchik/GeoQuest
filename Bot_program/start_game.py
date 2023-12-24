@@ -40,10 +40,12 @@ def run_cities():
 
     # Making the list of five photos
     random_five = random.sample(all_photos, 5)
-    links = [random_five[0]["image"], random_five[1]["image"], random_five[2]["image"], random_five[3]["image"],
+    links = [random_five[0]["image"], random_five[1]["image"],
+             random_five[2]["image"], random_five[3]["image"],
              random_five[4]["image"]]
 
-    coords = (results["gps_coordinates"]["latitude"], results["gps_coordinates"]["longitude"])
+    coords = (results["gps_coordinates"]["latitude"],
+              results["gps_coordinates"]["longitude"])
 
     return links, city["name"], coords
 
