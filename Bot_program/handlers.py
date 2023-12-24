@@ -2,9 +2,9 @@ from aiogram import Dispatcher, F
 from aiogram.types import Message, CallbackQuery, InputMediaPhoto
 from aiogram.filters import CommandStart
 import keyboards
-import Game_formation.start_game as game
+import GeoQuest.Bot_program.start_game as game
 from Levenshtein import distance
-import GeoQuest.Bot_program.synonyms as synonyms
+import GeoQuest.Bot_program.countries as countries
 import GeoQuest.Bot_program.texts as texts
 
 # running = 'no' - no games running
@@ -155,36 +155,30 @@ async def process_countries_game_answer(message: Message):
     user_answer = message.text
 
     levenshtein_threshold = 3
-    equivalent_names_lower = {name.lower(): equivalent_name if isinstance(equivalent_name, str) else equivalent_name[0].lower()
-                              for equivalent_name, names in synonyms.equivalent_names.items() for name in
-                              ([equivalent_name] if isinstance(equivalent_name, str) else equivalent_name)}
 
-    user_answer_lower = user_answer.lower()
-    correct = f'Правильно! Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить напиши' \
+    correct = f'Правильно! Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить, напиши' \
               f'/stop'
-    incorrect = f'Неправильно. Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить' \
+    incorrect = f'Неправильно. Это {correct_answer}\nДля нового раунда игры напиши /next. Если хочешь закончить, ' \
                 f'напиши /stop'
 
-    if user_answer_lower in equivalent_names_lower:
-        if equivalent_names_lower[user_answer_lower] == correct_answer.lower():
-            await message.answer(
-                text=correct,
-            )
-        else:
+    if distance(correct_answer.lower(), user_answer.lower()) <=  levenshtein_threshold:
+        await message.answer(
+            text=correct,
+        )
+    else:
+        flag = True
+        for el in countries.available_countries[correct_answer]:
+            if distance(el.lower(), user_answer.lower()) <= levenshtein_threshold:
+                await message.answer(
+                    text=correct,
+                )
+                flag = False
+                break
+        if flag:
             await message.answer(
                 text=incorrect,
             )
-        return
 
-    # Comparing the entered answer with the correct one by the Levenshtein distance
-    if distance(correct_answer.lower(), user_answer_lower) <= levenshtein_threshold:
-        await message.answer(
-            text=correct
-        )
-    else:
-        await message.answer(
-            text=incorrect,
-        )
 
 '''
 # pip install python-Levenshtein
