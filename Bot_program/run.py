@@ -3,11 +3,11 @@ import serpapi
 import json
 import random
 
-import GeoQuest.Bot_program.countries as countries
+import countries as countries
 
-SERPAPI_KEY = '49f5e2bbce2ef9327cf096793312adadd18668aff11ffaa8b10037e7ac29e7e7'
+SERP_API_KEY = ""
 
-client = serpapi.Client(api_key=os.getenv(SERPAPI_KEY))
+client = serpapi.Client(api_key=os.getenv(SERP_API_KEY))
 
 
 def run_cities():
@@ -24,7 +24,7 @@ def run_cities():
         "q": city["name"],
         "hl": "ru",
         "type": "search",
-        "api_key": SERPAPI_KEY
+        "api_key": SERP_API_KEY
     }
 
     # Getting results of the id-search
@@ -34,7 +34,7 @@ def run_cities():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results["data_id"],
-        "api_key": SERPAPI_KEY
+        "api_key": SERP_API_KEY
     }
 
     # Getting 30 first results of the photo-search
@@ -42,12 +42,10 @@ def run_cities():
 
     # Making the list of five photos
     random_five = random.sample(all_photos, 5)
-    links = [random_five[0]["image"], random_five[1]["image"],
-             random_five[2]["image"], random_five[3]["image"],
+    links = [random_five[0]["image"], random_five[1]["image"], random_five[2]["image"], random_five[3]["image"],
              random_five[4]["image"]]
 
-    coords = (results["gps_coordinates"]["latitude"],
-              results["gps_coordinates"]["longitude"])
+    coords = (results["gps_coordinates"]["latitude"], results["gps_coordinates"]["longitude"])
 
     return links, city["name"], coords
 
@@ -62,7 +60,7 @@ def run_countries():
         "q": country,
         "hl": "ru",
         "type": "search",
-        "api_key": SERPAPI_KEY
+        "api_key": SERP_API_KEY
     }
 
     # Getting results of the id-search
@@ -72,7 +70,7 @@ def run_countries():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results,
-        "api_key": SERPAPI_KEY
+        "api_key": SERP_API_KEY
     }
 
     # Getting 30 first results of the photo-search
