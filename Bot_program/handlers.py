@@ -17,8 +17,15 @@ import GeoQuest.Bot_program.all_russian_cities as all_russian_cities
 # running = 'russian_cities' - russian cities mode running
 # running = 'countries'
 
+class UserStatus:
+    def __init__(self):
+        self.running = 'no'
+        self.russian_cities = ''
+        self.countries = ''
+        self.coords = ''
 
-GAME_STATUS = {'running': 'no', 'russian_cities': '', 'countries': '', "coords": ()}
+
+USERS = {}
 dp = Dispatcher()
 
 
@@ -26,6 +33,7 @@ dp = Dispatcher()
 # It will send message with start_keyboard
 @dp.message(CommandStart())
 async def process_start_command(message: Message):
+    USERS[message.from_user.id] = UserStatus()
     await message.answer(
         text=texts.hello,
         reply_markup=keyboards.start_keyboard
@@ -77,8 +85,9 @@ async def process_menu_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'russian_cities_mode_button_pressed')
 async def process_russian_cities_mode_button_press(callback: CallbackQuery):
     links, city, coords = game.run_cities()
-    GAME_STATUS['running'] = 'russian_cities'
-    GAME_STATUS['russian_cities'] = city
+    USERS[callback.from_user.id].running = 'russian_cities'
+    USERS[callback.from_user.id].russian_cities = city
+    USERS[callback.from_user.id].coords = coords
     message_data = [
         InputMediaPhoto(media=links[0], caption=texts.city_helper),
         InputMediaPhoto(media=links[1]),
@@ -96,8 +105,8 @@ async def process_russian_cities_mode_button_press(callback: CallbackQuery):
 @dp.callback_query(F.data == 'countries_mode_button_pressed')
 async def process_countries_mode_button_press(callback: CallbackQuery):
     links, country = game.run_countries()
-    GAME_STATUS['running'] = 'countries'
-    GAME_STATUS['countries'] = country
+    USERS[callback.from_user.id].countries = country
+    USERS[callback.from_user.id].running = 'countries'
     message_data = [
         InputMediaPhoto(media=links[0], caption=texts.country_helper),
         InputMediaPhoto(media=links[1]),
@@ -112,9 +121,9 @@ async def process_countries_mode_button_press(callback: CallbackQuery):
 
 # Handler for /stop command
 # It will send message with start_keyboard
-@dp.message(lambda message: (message.text == '/stop' and GAME_STATUS['running'] != 'no'))
+@dp.message(lambda message: (message.text == '/stop' and USERS[message.from_user.id].running != 'no'))
 async def process_stop_command(message: Message):
-    GAME_STATUS['running'] = 'no'
+    USERS[message.from_user.id].running = 'no'
     await message.answer(
         text=texts.choose,
         reply_markup=keyboards.mode_choice_keyboard
@@ -123,13 +132,12 @@ async def process_stop_command(message: Message):
 
 # Handler for /next command
 # It will start new round of game
-@dp.message(lambda message: (message.text == '/next' and GAME_STATUS['running'] != 'no'))
+@dp.message(lambda message: (message.text == '/next' and USERS[message.from_user.id].running != 'no'))
 async def process_next_command(message: Message):
-    if GAME_STATUS['running'] == 'russian_cities':
+    if USERS[message.from_user.id].running == 'russian_cities':
         links, city, coords = game.run_cities()
-        GAME_STATUS['running'] = 'russian_cities'
-        GAME_STATUS['russian_cities'] = city
-        GAME_STATUS['coords'] = coords
+        USERS[message.from_user.id].russian_cities = city
+        USERS[message.from_user.id].coords = coords
         message_data = [
             InputMediaPhoto(media=links[0], caption=texts.city_helper),
             InputMediaPhoto(media=links[1]),
@@ -142,8 +150,7 @@ async def process_next_command(message: Message):
         )
     else:
         links, country = game.run_countries()
-        GAME_STATUS['running'] = 'countries'
-        GAME_STATUS['countries'] = country
+        USERS[message.from_user.id].countries = country
         message_data = [
             InputMediaPhoto(media=links[0], caption=texts.country_helper),
             InputMediaPhoto(media=links[1]),
@@ -156,20 +163,20 @@ async def process_next_command(message: Message):
         )
 
 
-# Handler for countries answers
-@dp.message(lambda message: (GAME_STATUS['running'] == 'russian_cities'))
+# Handler for cities answers
+@dp.message(lambda message: (USERS[message.from_user.id].running == 'russian_cities'))
 async def process_countries_game_answer(message: Message):
-    correct_answer = GAME_STATUS['russian_cities']
-    coords = GAME_STATUS['coords']
+    correct_answer = USERS[message.from_user.id].russian_cities
+    coords = USERS[message.from_user.id].coords
     user_answer = message.text
     points = 0
 
     levenshtein_threshold = 3
 
+    correct = f'Правильно! Это {correct_answer}. Вы получаете 1000 очков\nДля нового раунда игры напишите ' \
+              f'/next. Если хотите закончить, напишите /stop'
+
     if distance(correct_answer.lower(), user_answer.lower()) <= levenshtein_threshold:
-        points = 1000
-        correct = f'Правильно! Это {correct_answer}. Вы получаете 1000 очков\nДля нового раунда игры напишите ' \
-                  f'/next. Если хотите закончить, напишите /stop'
         await message.answer(
             text=correct,
         )
@@ -179,16 +186,16 @@ async def process_countries_game_answer(message: Message):
             d = geodesic(coords, true_coords).kilometers
             points = round(1000 / (max(sqrt(d) - 8.8, 1)))
             incorrect = f'Неправильно. Это {correct_answer}. Вы получаете {points} очков\nДля нового раунда игры ' \
-                        f'напишите /next. Если хотите закончить, напишите /stop'
+                        f'напишите /next. Если хочешь закончить, напишите /stop'
             await message.answer(
                 text=incorrect,
             )
 
 
-# Handler for cities answers
-@dp.message(lambda message: (GAME_STATUS['running'] == 'countries'))
+# Handler for countries answers
+@dp.message(lambda message: (USERS[message.from_user.id].running == 'countries'))
 async def process_countries_game_answer(message: Message):
-    correct_answer = GAME_STATUS['countries']
+    correct_answer = USERS[message.from_user.id].countries
     user_answer = message.text
 
     levenshtein_threshold = 3

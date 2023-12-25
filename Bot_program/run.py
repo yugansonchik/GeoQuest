@@ -5,7 +5,9 @@ import random
 
 import GeoQuest.Bot_program.countries as countries
 
-client = serpapi.Client(api_key=os.getenv("d1dd78ada0cdcb4fe90e1b06efdea2928bf3f768b93e321653169bc7f452a301"))
+SERPAPI_KEY = '49f5e2bbce2ef9327cf096793312adadd18668aff11ffaa8b10037e7ac29e7e7'
+
+client = serpapi.Client(api_key=os.getenv(SERPAPI_KEY))
 
 
 def run_cities():
@@ -22,7 +24,7 @@ def run_cities():
         "q": city["name"],
         "hl": "ru",
         "type": "search",
-        "api_key": ""
+        "api_key": SERPAPI_KEY
     }
 
     # Getting results of the id-search
@@ -32,7 +34,7 @@ def run_cities():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results["data_id"],
-        "api_key": ""
+        "api_key": SERPAPI_KEY
     }
 
     # Getting 30 first results of the photo-search
@@ -60,7 +62,7 @@ def run_countries():
         "q": country,
         "hl": "ru",
         "type": "search",
-        "api_key": ""
+        "api_key": SERPAPI_KEY
     }
 
     # Getting results of the id-search
@@ -70,7 +72,7 @@ def run_countries():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results,
-        "api_key": ""
+        "api_key": SERPAPI_KEY
     }
 
     # Getting 30 first results of the photo-search
