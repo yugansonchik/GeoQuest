@@ -22,7 +22,7 @@ def run_cities():
         "q": city["name"],
         "hl": "ru",
         "type": "search",
-        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
+        "api_key": ""
     }
 
     # Getting results of the id-search
@@ -32,7 +32,7 @@ def run_cities():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results["data_id"],
-        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
+        "api_key": ""
     }
 
     # Getting 30 first results of the photo-search
@@ -60,7 +60,7 @@ def run_countries():
         "q": country,
         "hl": "ru",
         "type": "search",
-        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
+        "api_key": ""
     }
 
     # Getting results of the id-search
@@ -70,7 +70,7 @@ def run_countries():
     params_for_photo = {
         "engine": "google_maps_photos",
         "data_id": results,
-        "api_key": "12015a89a02f9dda8e2b624fa37421a1a832f750151830a9d6319086ddf20a57"
+        "api_key": ""
     }
 
     # Getting 30 first results of the photo-search

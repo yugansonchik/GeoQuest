@@ -4,7 +4,7 @@ from aiogram import Dispatcher, F
 from aiogram.types import Message, CallbackQuery, InputMediaPhoto
 from aiogram.filters import CommandStart
 import keyboards
-import GeoQuest.Bot_program.start_game as game
+import GeoQuest.Bot_program.run as game
 from Levenshtein import distance
 import GeoQuest.Bot_program.countries as countries
 import GeoQuest.Bot_program.texts as texts

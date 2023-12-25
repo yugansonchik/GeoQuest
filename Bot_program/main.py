@@ -3,7 +3,7 @@ from aiogram import Bot
 import handlers
 
 
-BOT_TOKEN = '6768068988:AAHfjcqFw3ePunIwcN_VuklK4B46gl9VXUY'
+BOT_TOKEN = ''
 
 bot = Bot(token=BOT_TOKEN)
 
@@ -13,3 +13,5 @@ async def main() -> None:
 
 if __name__ == '__main__':
     asyncio.run(main())
+
+
