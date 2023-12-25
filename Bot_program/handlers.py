@@ -1,5 +1,3 @@
-import json
-
 from aiogram import Dispatcher, F
 from aiogram.types import Message, CallbackQuery, InputMediaPhoto
 from aiogram.filters import CommandStart
